@@ -70,6 +70,29 @@ class AsciiStrategy(re.RenderStrategy):
     def apply_end_line_modifier(self, msg):
         return msg
 
+    def render_frame(self, frame, output=None, output_format=None, with_audio=False): 
+        if PLATFORM:
+            sys.stdout.write("echo -en '\033[2J' \n")
+        else:
+            sys.stdout.write('\033[2J')
+
+        t0 = time.process_time()
+        if PLATFORM:
+            rows, cols = os.popen('stty size', 'r').read().split()
+        else:
+            cols, rows = os.get_terminal_size()
+        # sleep if the process was too fast
+        if output is None:
+            if PLATFORM:
+                sys.stdout.write('\u001b[0;0H')
+            else:
+                sys.stdout.write("\x1b[0;0H")
+            # scale each frame according to terminal dimensions
+            resized_frame = self.resize_frame(frame, (cols, rows))
+            # convert frame pixels to colored string
+            msg = self.convert_frame_pixels_to_ascii(resized_frame, (cols, rows)) 
+            sys.stdout.write(msg) # Print the final string
+
     def render(self, cap, output=None, output_format=None, with_audio=False):
         """
         Iterate each video frame to print a set of ascii chars
