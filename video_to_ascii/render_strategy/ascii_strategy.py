@@ -72,12 +72,6 @@ class AsciiStrategy(re.RenderStrategy):
 
     def render_frame(self, frame, output=None, output_format=None, with_audio=False): 
         if PLATFORM:
-            sys.stdout.write("echo -en '\033[2J' \n")
-        else:
-            sys.stdout.write('\033[2J')
-
-        t0 = time.process_time()
-        if PLATFORM:
             rows, cols = os.popen('stty size', 'r').read().split()
         else:
             cols, rows = os.get_terminal_size()
