@@ -70,7 +70,7 @@ class AsciiStrategy(re.RenderStrategy):
     def apply_end_line_modifier(self, msg):
         return msg
 
-    def render_frame(self, frame, output=None, output_format=None, with_audio=False): 
+    async def render_frame(self, frame, output=None, output_format=None, with_audio=False): 
         if PLATFORM:
             rows, cols = os.popen('stty size', 'r').read().split()
         else:
